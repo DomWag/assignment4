@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
@@ -16,8 +18,11 @@ import com.acertainbookstore.interfaces.Replicator;
  * concurrently.
  */
 public class CertainBookStoreReplicator implements Replicator {
-
+	private final ExecutorService pool ;
+	
+	
 	public CertainBookStoreReplicator(int maxReplicatorThreads) {
+		pool = Executors.newFixedThreadPool(maxReplicatorThreads);
 		// TODO:Implement this constructor
 	}
 
@@ -26,15 +31,17 @@ public class CertainBookStoreReplicator implements Replicator {
 		List<Future<ReplicationResult>> replication = new ArrayList<Future<ReplicationResult>>();
 		for(String s: slaveServers){
 			//Create the instance of the Callable task
-			Callable<ReplicationResult> rs = new CertainBookStoreReplicationTask();
+			Callable<ReplicationResult> rs = new CertainBookStoreReplicationTask(s);
+			//pool.submit(rs);
+			
 			//create the object of FutureTask
-			FutureTask<ReplicationResult> task = new FutureTask<ReplicationResult>(rs);
+			// old FutureTask<ReplicationResult> task = new FutureTask<ReplicationResult>(rs);
 			
-			replication.add(task);
+			replication.add(pool.submit(rs));
 			
-			//Create thread object using the task object created
+			/*//Create thread object using the task object created
 			Thread t = new Thread(task);
-			t.start();
+			t.start();*/
 		}
 		
 		

@@ -9,7 +9,9 @@ import java.util.concurrent.Callable;
 public class CertainBookStoreReplicationTask implements
 		Callable<ReplicationResult> {
 
-	public CertainBookStoreReplicationTask() {
+	String slaveAdress;
+	public CertainBookStoreReplicationTask(String s) {
+		slaveAdress = s;
 		// TODO Auto-generated constructor stub
 	}
 
