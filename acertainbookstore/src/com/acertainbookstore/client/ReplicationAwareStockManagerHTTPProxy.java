@@ -101,7 +101,7 @@ public class ReplicationAwareStockManagerHTTPProxy implements StockManager {
 		if (slaveAddresses.isEmpty()) {
 			return masterAddress;
 		} else {
-			// randonmly give a slaveAdress back
+			// randomly give a slaveAdress back
 			int size = slaveAddresses.size();
 			int item = new Random().nextInt(size); 
 			int i = 0;
@@ -112,9 +112,7 @@ public class ReplicationAwareStockManagerHTTPProxy implements StockManager {
 					i = i + 1;
 
 				}
-
 			}
-
 		}
 		return masterAddress;
 	}

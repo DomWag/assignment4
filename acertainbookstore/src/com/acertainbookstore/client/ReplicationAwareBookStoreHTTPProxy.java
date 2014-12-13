@@ -101,7 +101,6 @@ public class ReplicationAwareBookStoreHTTPProxy implements BookStore {
 			}
 			this.slaveAddresses.add(slave);
 		}
-
 	}
 
 	public String getReplicaAddress() {
@@ -109,7 +108,7 @@ public class ReplicationAwareBookStoreHTTPProxy implements BookStore {
 		if (slaveAddresses.isEmpty()) {
 			return masterAddress;
 		} else {
-			// randonmly give a slaveAdress back
+			// randomly give a slaveAdress back
 			int size = slaveAddresses.size();
 			int item = new Random().nextInt(size);
 			int i = 0;
@@ -120,10 +119,9 @@ public class ReplicationAwareBookStoreHTTPProxy implements BookStore {
 					i = i + 1;
 
 				}
-
 			}
-
 		}
+		
 		return masterAddress;
 	}
 
