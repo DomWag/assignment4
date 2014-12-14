@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -18,32 +19,40 @@ import com.acertainbookstore.interfaces.Replicator;
  * concurrently.
  */
 public class CertainBookStoreReplicator implements Replicator {
+	
 	private final ExecutorService pool ;
 	
-	
 	public CertainBookStoreReplicator(int maxReplicatorThreads) {
+		
 		pool = Executors.newFixedThreadPool(maxReplicatorThreads);
-		// TODO:Implement this constructor
 	}
 
 	public List<Future<ReplicationResult>> replicate(Set<String> slaveServers,
 			ReplicationRequest request) {
-		List<Future<ReplicationResult>> replication = new ArrayList<Future<ReplicationResult>>();
+		
+		// Future holds the future Replication Result
+		List<Future<ReplicationResult>> future = new ArrayList<Future<ReplicationResult>>();
+		
 		for(String s: slaveServers){
-			//Create the instance of the Callable task
-			Callable<ReplicationResult> rs = new CertainBookStoreReplicationTask(s);
-			//pool.submit(rs);
 			
-			//create the object of FutureTask
-			// old FutureTask<ReplicationResult> task = new FutureTask<ReplicationResult>(rs);
+			// Creates a replication task 
+			CertainBookStoreReplicationTask task = new CertainBookStoreReplicationTask(s);
 			
-			replication.add(pool.submit(rs));
+			// performs the replication
+			try {
+				pool.submit(task).get();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
-			/*//Create thread object using the task object created
-			Thread t = new Thread(task);
-			t.start();*/
+			// submit returns the Future<Replication Result> which is added to the return list
+			future.add(pool.submit(task));
 		}
 		
-		return replication;
+		return future;
 	}
 }

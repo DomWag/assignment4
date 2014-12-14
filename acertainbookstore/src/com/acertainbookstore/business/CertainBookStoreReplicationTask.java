@@ -8,16 +8,19 @@ import java.util.concurrent.Callable;
  */
 public class CertainBookStoreReplicationTask implements
 		Callable<ReplicationResult> {
-
+	
 	String slaveAdress;
+	
 	public CertainBookStoreReplicationTask(String s) {
+		
 		slaveAdress = s;
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public ReplicationResult call() throws Exception {
-		// TODO Auto-generated method stub
+		
+		
+		
 		return null;
 	}
 
