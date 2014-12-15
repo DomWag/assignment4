@@ -215,18 +215,19 @@ public final class BookStoreUtility {
 
 		if (exchangeState == HttpExchange.STATUS_COMPLETED) {
 			try {
-				BookStoreResponse bookStoreResponse = (BookStoreResponse) BookStoreUtility
+				ReplicationResult bookStoreResponse = (ReplicationResult) BookStoreUtility
 						.deserializeXMLStringToObject(exchange
 								.getResponseContent().trim());
 				if (bookStoreResponse == null) {
 					throw new BookStoreException(
 							BookStoreClientConstants.strERR_CLIENT_RESPONSE_DECODING);
 				}
-				BookStoreException ex = bookStoreResponse.getException();
-				if (ex != null) {
-					throw ex;
-				}
-				return bookStoreResponse.getResult();
+				/*//In case a replication was not successful
+				boolean succesfull = bookStoreResponse.isReplicationSuccessful();
+				if (!succesfull) {
+					return null;
+				*/
+				return bookStoreResponse;
 
 			} catch (UnsupportedEncodingException ex) {
 				throw new BookStoreException(
