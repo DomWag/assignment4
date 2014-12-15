@@ -7,6 +7,7 @@ import org.eclipse.jetty.io.ByteArrayBuffer;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 import com.acertainbookstore.business.ReplicationRequest;
+import com.acertainbookstore.business.ReplicationResult;
 import com.acertainbookstore.utils.BookStoreException;
 import com.acertainbookstore.utils.BookStoreMessageTag;
 import com.acertainbookstore.utils.BookStoreResult;
@@ -41,19 +42,19 @@ public class ClientProxyForReplicateCall {
 	}
 	
 	
-	public BookStoreResult forwardRequest(String slaveAdress, ReplicationRequest rr) throws BookStoreException{
-		BookStoreResult result = null;
+	public ReplicationResult forwardRequest(String slaveAdress, ReplicationRequest rr) throws BookStoreException{
+		ReplicationResult result = null;
 		String listISBNsxmlString = BookStoreUtility
 				.serializeObjectToXMLString(rr);
 		Buffer requestContent = new ByteArrayBuffer(listISBNsxmlString);
 		String urlString = slaveAdress
-				+ rr.getMessageType();
+				+ BookStoreMessageTag.REPLICATIONREQUEST;
 		ContentExchange exchange = new ContentExchange();
 
 		exchange.setMethod("POST");
 		exchange.setURL(urlString);
 		exchange.setRequestContent(requestContent);
-		result = BookStoreUtility.SendAndRecv(this.client, exchange);
+		result = BookStoreUtility.SendAndRecv2(this.client, exchange);
 		return result;
 	}
 }

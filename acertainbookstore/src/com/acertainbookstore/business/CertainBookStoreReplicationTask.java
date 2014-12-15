@@ -31,7 +31,7 @@ public class CertainBookStoreReplicationTask implements
 		clients.forwardRequest(slaveAdress, rr);
 		
 		
-		return null;
+		return ;
 	}
 
 }

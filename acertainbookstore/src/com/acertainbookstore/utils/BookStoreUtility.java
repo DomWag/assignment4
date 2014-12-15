@@ -5,7 +5,6 @@ package com.acertainbookstore.utils;
 
 
 import java.io.IOException;
-
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
@@ -15,6 +14,7 @@ import org.eclipse.jetty.client.ContentExchange;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.HttpExchange;
 
+import com.acertainbookstore.business.ReplicationResult;
 import com.acertainbookstore.client.BookStoreClientConstants;
 import com.acertainbookstore.utils.BookStoreResult;
 import com.thoughtworks.xstream.XStream;
@@ -195,6 +195,57 @@ public final class BookStoreUtility {
 		}
 	}
 
+	public static ReplicationResult SendAndRecv2(HttpClient client,
+			ContentExchange exchange) throws BookStoreException {
+		int exchangeState;
+		try {
+			client.send(exchange);
+		} catch (IOException ex) {
+			throw new BookStoreException(
+					BookStoreClientConstants.strERR_CLIENT_REQUEST_SENDING, ex);
+		}
+
+		try {
+			exchangeState = exchange.waitForDone(); // block until the response
+													// is available
+		} catch (InterruptedException ex) {
+			throw new BookStoreException(
+					BookStoreClientConstants.strERR_CLIENT_REQUEST_SENDING, ex);
+		}
+
+		if (exchangeState == HttpExchange.STATUS_COMPLETED) {
+			try {
+				BookStoreResponse bookStoreResponse = (BookStoreResponse) BookStoreUtility
+						.deserializeXMLStringToObject(exchange
+								.getResponseContent().trim());
+				if (bookStoreResponse == null) {
+					throw new BookStoreException(
+							BookStoreClientConstants.strERR_CLIENT_RESPONSE_DECODING);
+				}
+				BookStoreException ex = bookStoreResponse.getException();
+				if (ex != null) {
+					throw ex;
+				}
+				return bookStoreResponse.getResult();
+
+			} catch (UnsupportedEncodingException ex) {
+				throw new BookStoreException(
+						BookStoreClientConstants.strERR_CLIENT_RESPONSE_DECODING,
+						ex);
+			}
+		} else if (exchangeState == HttpExchange.STATUS_EXCEPTED) {
+			throw new BookStoreException(
+					BookStoreClientConstants.strERR_CLIENT_REQUEST_EXCEPTION);
+		} else if (exchangeState == HttpExchange.STATUS_EXPIRED) {
+			throw new BookStoreException(
+					BookStoreClientConstants.strERR_CLIENT_REQUEST_TIMEOUT);
+		} else {
+			throw new BookStoreException(
+					BookStoreClientConstants.strERR_CLIENT_UNKNOWN);
+		}
+	}
+	
+	
 	/**
 	 * Returns the message of the request as a string
 	 * 
