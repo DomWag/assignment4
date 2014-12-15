@@ -61,4 +61,40 @@ public class SlaveCertainBookStore implements ReplicatedReadOnlyBookStore,
 		return result;
 	}
 
+	public void addBooks(Set<StockBook> newBooks) throws BookStoreException{
+		snapshotId++;
+//in case of a failure, propagte the failure to the calling class (slavebookstorehttpmessagehandler)
+		bookStore.addBooks(newBooks);
+	
+	}
+
+	public void addCopies(Set<BookCopy> listBookCopies) throws BookStoreException {
+		snapshotId++;
+		bookStore.addCopies(listBookCopies);
+		
+	}
+
+	public void buyBooks(Set<BookCopy> bookCopiesToBuy) throws BookStoreException {
+		snapshotId++;
+		bookStore.buyBooks(bookCopiesToBuy);
+		
+	}
+
+	public void updateEditorPicks(Set<BookEditorPick> mapEditorPicksValues) throws BookStoreException {
+		snapshotId++;
+		bookStore.updateEditorPicks(mapEditorPicksValues);
+		
+	}
+
+	public void removeAllBooks() throws BookStoreException {
+		snapshotId++;
+		bookStore.removeAllBooks();
+	}
+
+	public void removeBooks(Set<Integer> bookSet) throws BookStoreException {
+		snapshotId++;
+		bookStore.removeBooks(bookSet);
+		
+	}
+
 }
