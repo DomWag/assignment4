@@ -38,17 +38,6 @@ public class CertainBookStoreReplicator implements Replicator {
 			// Creates a replication task 
 			CertainBookStoreReplicationTask task = new CertainBookStoreReplicationTask(s);
 			
-			// performs the replication
-			try {
-				pool.submit(task).get();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
 			// submit returns the Future<Replication Result> which is added to the return list
 			future.add(pool.submit(task));
 		}
