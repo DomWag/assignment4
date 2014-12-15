@@ -28,10 +28,10 @@ public class CertainBookStoreReplicationTask implements
 	@Override
 	public ReplicationResult call() throws Exception {
 		ClientProxyForReplicateCall clients = new ClientProxyForReplicateCall();
-		clients.forwardRequest(slaveAdress, rr);
+		ReplicationResult rs = clients.forwardRequest(slaveAdress, rr);
 		
 		
-		return ;
+		return rs;
 	}
 
 }
