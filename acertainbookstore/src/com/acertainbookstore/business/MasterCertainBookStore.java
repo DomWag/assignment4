@@ -33,7 +33,7 @@ public class MasterCertainBookStore implements ReplicatedBookStore,
 	private Replicator replicator = null;
 	private Set<String> slaveServers;
 	private int maxReplicatorThreads = 10;
-	private String filePath = "/universe/acertainbookstore/server.properties";
+	private String filePath = "C:/Users/Dominik Wagner/Ass4/acertainbookstore/server.properties";
 
 	public MasterCertainBookStore() throws BookStoreException {
 		bookStore = new CertainBookStore();

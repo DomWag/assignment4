@@ -245,6 +245,7 @@ public class MasterBookStoreHTTPMessageHandler extends AbstractHandler {
 
 			default:
 				System.out.println("Unhandled message tag");
+				System.out.println(messageTag);
 				break;
 			}
 		}

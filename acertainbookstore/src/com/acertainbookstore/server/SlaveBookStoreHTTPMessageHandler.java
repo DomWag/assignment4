@@ -140,6 +140,7 @@ public class SlaveBookStoreHTTPMessageHandler extends AbstractHandler {
 								.serializeObjectToXMLString(bookStoreResponse));
 				break;
 			case REPLICATIONREQUEST:
+				
 				String bla = BookStoreUtility
 						.extractPOSTDataFromRequest(request);
 				ReplicationRequest rr = (ReplicationRequest) BookStoreUtility
@@ -250,11 +251,14 @@ public class SlaveBookStoreHTTPMessageHandler extends AbstractHandler {
 					break;
 
 				default:
+					System.out.println("Unhandled message tag inner Repl Req case");
+					System.out.println(messageTags);
 					break;
 				}
 
 			default:
-				System.out.println("Unhandled message tag");
+				System.out.println("Unhandled message tag outer repl req case");
+				System.out.println(messageTag);
 				break;
 			}
 		}

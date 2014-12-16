@@ -35,7 +35,7 @@ public class CertainBookStoreReplicator implements Replicator {
 		
 		for(String s: slaveServers){
 			
-			// Creates a replication task 
+			// Creates a replication 
 			CertainBookStoreReplicationTask task = new CertainBookStoreReplicationTask(s, request);
 			
 			// submit returns the Future<Replication Result> which is added to the return list
