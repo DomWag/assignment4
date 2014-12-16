@@ -3,15 +3,13 @@
  */
 package com.acertainbookstore.server;
 
-import com.acertainbookstore.business.ReplicationRequest;
 import com.acertainbookstore.business.SlaveCertainBookStore;
-import com.acertainbookstore.interfaces.Replication;
 import com.acertainbookstore.utils.BookStoreConstants;
 
 /**
  * Starts the slave bookstore HTTP server.
  */
-public class SlaveBookStoreHTTPServer implements Replication {
+public class SlaveBookStoreHTTPServer {
 
 	/**
 	 * @param args
@@ -39,10 +37,5 @@ public class SlaveBookStoreHTTPServer implements Replication {
 		}
 	}
 
-	@Override
-	public void replicate(ReplicationRequest req) {
-		
-		
-		
-	}
+
 }
