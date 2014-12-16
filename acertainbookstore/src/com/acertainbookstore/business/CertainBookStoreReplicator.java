@@ -36,10 +36,17 @@ public class CertainBookStoreReplicator implements Replicator {
 		for(String s: slaveServers){
 			
 			// Creates a replication 
-			CertainBookStoreReplicationTask task = new CertainBookStoreReplicationTask(s, request);
+			CertainBookStoreReplicationTask task;
+			try {
+				task = new CertainBookStoreReplicationTask(s, request);
+				// submit returns the Future<Replication Result> which is added to the return list
+				future.add(pool.submit(task));
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
-			// submit returns the Future<Replication Result> which is added to the return list
-			future.add(pool.submit(task));
 		}
 		
 		return future;

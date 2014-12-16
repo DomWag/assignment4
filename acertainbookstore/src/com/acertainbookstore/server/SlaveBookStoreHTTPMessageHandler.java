@@ -24,6 +24,7 @@ import com.acertainbookstore.utils.BookStoreConstants;
 import com.acertainbookstore.utils.BookStoreException;
 import com.acertainbookstore.utils.BookStoreMessageTag;
 import com.acertainbookstore.utils.BookStoreResponse;
+import com.acertainbookstore.utils.BookStoreResult;
 import com.acertainbookstore.utils.BookStoreUtility;
 
 /**
@@ -74,7 +75,6 @@ public class SlaveBookStoreHTTPMessageHandler extends AbstractHandler {
 
 			// Write requests should not be handled
 			switch (messageTag) {
-
 			case LISTBOOKS:
 				bookStoreResponse = new BookStoreResponse();
 				try {
@@ -140,27 +140,24 @@ public class SlaveBookStoreHTTPMessageHandler extends AbstractHandler {
 								.serializeObjectToXMLString(bookStoreResponse));
 				break;
 			case REPLICATIONREQUEST:
-				
 				String bla = BookStoreUtility
 						.extractPOSTDataFromRequest(request);
 				ReplicationRequest rr = (ReplicationRequest) BookStoreUtility
 						.deserializeXMLStringToObject(bla);
-				replicationResult = null;
+				BookStoreResponse result = null;
 				BookStoreMessageTag messageTags = rr.getMessageType();
 				switch (messageTags) {
 				case ADDBOOKS:
 					Set<StockBook> newBooks = (Set<StockBook>) rr.getDataSet();
 					try {
-						replicationResult = new ReplicationResult(requestURI,
-								true);
-						myBookStore.addBooks(newBooks);
+						result = new BookStoreResponse();
+						result.setResult(myBookStore.addBooks(newBooks));
 
 					} catch (BookStoreException ex) {
-						replicationResult = new ReplicationResult(requestURI,
-								false);
+						result.setException(ex);
 					}
 					String listBooksxmlString = BookStoreUtility
-							.serializeObjectToXMLString(replicationResult);
+							.serializeObjectToXMLString(result);
 
 					response.getWriter().println(listBooksxmlString);
 
@@ -169,15 +166,15 @@ public class SlaveBookStoreHTTPMessageHandler extends AbstractHandler {
 					Set<BookCopy> listBookCopies = (Set<BookCopy>) rr
 							.getDataSet();
 					try {
-						replicationResult = new ReplicationResult(requestURI,
-								true);
-						myBookStore.addCopies(listBookCopies);
+						result = new BookStoreResponse();
+
+						result.setResult(myBookStore.addCopies(listBookCopies));
 					} catch (BookStoreException ex) {
-						replicationResult = new ReplicationResult(requestURI,
-								false);
+						result.setException(ex);
+
 					}
 					String listBooksxmlString2 = BookStoreUtility
-							.serializeObjectToXMLString(replicationResult);
+							.serializeObjectToXMLString(result);
 
 					response.getWriter().println(listBooksxmlString2);
 					break;
@@ -186,16 +183,16 @@ public class SlaveBookStoreHTTPMessageHandler extends AbstractHandler {
 					Set<BookCopy> bookCopiesToBuy = (Set<BookCopy>) rr
 							.getDataSet();
 					try {
-						replicationResult = new ReplicationResult(requestURI,
-								true);
-						myBookStore.buyBooks(bookCopiesToBuy);
+						result = new BookStoreResponse();
+
+						result.setResult(myBookStore.buyBooks(bookCopiesToBuy));
 					} catch (BookStoreException ex) {
-						replicationResult = new ReplicationResult(requestURI,
-								false);
+						result.setException(ex);
+
 					}
 
 					String listBooksxmlString3 = BookStoreUtility
-							.serializeObjectToXMLString(replicationResult);
+							.serializeObjectToXMLString(result);
 
 					response.getWriter().println(listBooksxmlString3);
 					break;
@@ -204,58 +201,60 @@ public class SlaveBookStoreHTTPMessageHandler extends AbstractHandler {
 					Set<BookEditorPick> mapEditorPicksValues = (Set<BookEditorPick>) rr
 							.getDataSet();
 					try {
-						replicationResult = new ReplicationResult(requestURI,
-								true);
-						myBookStore.updateEditorPicks(mapEditorPicksValues);
+						result = new BookStoreResponse();
+
+						result.setResult(myBookStore
+								.updateEditorPicks(mapEditorPicksValues));
 					} catch (BookStoreException e) {
-						replicationResult = new ReplicationResult(requestURI,
-								false);
+						result.setException(e);
+
 					}
-					
+
 					String listBooksxmlString4 = BookStoreUtility
-							.serializeObjectToXMLString(replicationResult);
+							.serializeObjectToXMLString(result);
 
 					response.getWriter().println(listBooksxmlString4);
 					break;
 				case REMOVEALLBOOKS:
 					try {
-						replicationResult = new ReplicationResult(requestURI,
-								true);
-						myBookStore.removeAllBooks();
+						result = new BookStoreResponse();
+
+						result.setResult(myBookStore.removeAllBooks());
 					} catch (BookStoreException e) {
-						replicationResult = new ReplicationResult(requestURI,
-								false);
+						result.setException(e);
+
 					}
-					
+
 					String listBooksxmlString5 = BookStoreUtility
-							.serializeObjectToXMLString(replicationResult);
+							.serializeObjectToXMLString(result);
 
 					response.getWriter().println(listBooksxmlString5);
 					break;
-					
+
 				case REMOVEBOOKS:
 					Set<Integer> bookSet = (Set<Integer>) rr.getDataSet();
 					try {
-						replicationResult = new ReplicationResult(requestURI,
-								true);
-						myBookStore.removeBooks(bookSet);
+						result = new BookStoreResponse();
+
+						result.setResult(myBookStore.removeBooks(bookSet));
 					} catch (BookStoreException e) {
-						replicationResult = new ReplicationResult(requestURI,
-								false);
+						result.setException(e);
+
 					}
-					
+
 					String listBooksxmlString6 = BookStoreUtility
-							.serializeObjectToXMLString(replicationResult);
+							.serializeObjectToXMLString(result);
 
 					response.getWriter().println(listBooksxmlString6);
 					break;
 
 				default:
-					System.out.println("Unhandled message tag inner Repl Req case");
+					System.out
+							.println("Unhandled message tag inner Repl Req case");
 					System.out.println(messageTags);
 					break;
 				}
-
+				break;
 			default:
 				System.out.println("Unhandled message tag outer repl req case");
 				System.out.println(messageTag);

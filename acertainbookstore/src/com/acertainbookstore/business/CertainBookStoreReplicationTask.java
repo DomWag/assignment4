@@ -3,6 +3,8 @@ package com.acertainbookstore.business;
 import java.util.concurrent.Callable;
 
 import com.acertainbookstore.client.ClientProxyForReplicateCall;
+import com.acertainbookstore.utils.BookStoreException;
+import com.acertainbookstore.utils.BookStoreResult;
 
 /**
  * CertainBookStoreReplicationTask performs replication to a slave server. It
@@ -13,25 +15,31 @@ public class CertainBookStoreReplicationTask implements
 	
 	String slaveAdress;
 	ReplicationRequest rr;
-	
+	ClientProxyForReplicateCall clients;
 
 	
 
-	public CertainBookStoreReplicationTask(String slave, ReplicationRequest request) {
+	public CertainBookStoreReplicationTask(String slave, ReplicationRequest request) throws Exception {
 		slaveAdress = slave;
 		rr = request;
+		clients = new ClientProxyForReplicateCall();
 		}
 
 
 
 
 	@Override
-	public ReplicationResult call() throws Exception {
-		ClientProxyForReplicateCall clients = new ClientProxyForReplicateCall();
-		ReplicationResult rs = clients.forwardRequest(slaveAdress, rr);
+	public ReplicationResult call() throws Exception  {
+		ReplicationResult rrs;
+		try{
+			BookStoreResult rs = clients.forwardRequest(slaveAdress, rr);
+			rrs = new ReplicationResult(slaveAdress, true);
+		} catch (BookStoreException bse){
+			rrs = new ReplicationResult(slaveAdress, false);
+
+		}
 		
-		
-		return rs;
+		return rrs;
 	}
 
 }

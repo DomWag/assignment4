@@ -61,39 +61,49 @@ public class SlaveCertainBookStore implements ReplicatedReadOnlyBookStore,
 		return result;
 	}
 
-	public void addBooks(Set<StockBook> newBooks) throws BookStoreException{
+	public BookStoreResult addBooks(Set<StockBook> newBooks) throws BookStoreException{
 		snapshotId++;
-//in case of a failure, propagte the failure to the calling class (slavebookstorehttpmessagehandler)
 		bookStore.addBooks(newBooks);
-	
+		//in case of a failure, propagte the failure to the calling class (slavebookstorehttpmessagehandler)
+		BookStoreResult result = new BookStoreResult(null, snapshotId);
+		return result;
 	}
 
-	public void addCopies(Set<BookCopy> listBookCopies) throws BookStoreException {
+	public BookStoreResult addCopies(Set<BookCopy> listBookCopies) throws BookStoreException {
 		snapshotId++;
 		bookStore.addCopies(listBookCopies);
-		
+		BookStoreResult result = new BookStoreResult(null, snapshotId);
+		return result;
 	}
 
-	public void buyBooks(Set<BookCopy> bookCopiesToBuy) throws BookStoreException {
+	public BookStoreResult buyBooks(Set<BookCopy> bookCopiesToBuy) throws BookStoreException {
 		snapshotId++;
 		bookStore.buyBooks(bookCopiesToBuy);
+		BookStoreResult result = new BookStoreResult(null, snapshotId);
+		return result;
 		
 	}
 
-	public void updateEditorPicks(Set<BookEditorPick> mapEditorPicksValues) throws BookStoreException {
+	public BookStoreResult updateEditorPicks(Set<BookEditorPick> mapEditorPicksValues) throws BookStoreException {
 		snapshotId++;
 		bookStore.updateEditorPicks(mapEditorPicksValues);
+		BookStoreResult result = new BookStoreResult(null, snapshotId);
+		return result;
 		
 	}
 
-	public void removeAllBooks() throws BookStoreException {
+	public BookStoreResult removeAllBooks() throws BookStoreException {
 		snapshotId++;
 		bookStore.removeAllBooks();
+		BookStoreResult result = new BookStoreResult(null, snapshotId);
+		return result;
 	}
 
-	public void removeBooks(Set<Integer> bookSet) throws BookStoreException {
+	public BookStoreResult removeBooks(Set<Integer> bookSet) throws BookStoreException {
 		snapshotId++;
 		bookStore.removeBooks(bookSet);
+		BookStoreResult result = new BookStoreResult(null, snapshotId);
+		return result;
 		
 	}
 

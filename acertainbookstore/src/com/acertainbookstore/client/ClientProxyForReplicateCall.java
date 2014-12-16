@@ -16,45 +16,43 @@ import com.acertainbookstore.utils.BookStoreUtility;
 public class ClientProxyForReplicateCall {
 	private HttpClient client;
 
-	
 	public ClientProxyForReplicateCall() throws Exception {
-	client = new HttpClient();
-	client.setConnectorType(HttpClient.CONNECTOR_SELECT_CHANNEL);
-	client.setMaxConnectionsPerAddress(BookStoreClientConstants.CLIENT_MAX_CONNECTION_ADDRESS); // max
-																								// concurrent
-																								// connections
-																								// to
-																								// every
-																								// address
-	client.setThreadPool(new QueuedThreadPool(
-			BookStoreClientConstants.CLIENT_MAX_THREADSPOOL_THREADS)); // max
-																		// threads
-	client.setTimeout(BookStoreClientConstants.CLIENT_MAX_TIMEOUT_MILLISECS); // seconds
-																				// timeout;
-																				// if
-																				// no
-																				// server
-																				// reply,
-																				// the
-																				// request
-																				// expires
-	client.start();
+		client = new HttpClient();
+		client.setConnectorType(HttpClient.CONNECTOR_SELECT_CHANNEL);
+		client.setMaxConnectionsPerAddress(BookStoreClientConstants.CLIENT_MAX_CONNECTION_ADDRESS); // max
+																									// concurrent
+																									// connections
+																									// to
+																									// every
+																									// address
+		client.setThreadPool(new QueuedThreadPool(
+				BookStoreClientConstants.CLIENT_MAX_THREADSPOOL_THREADS)); // max
+																			// threads
+		client.setTimeout(BookStoreClientConstants.CLIENT_MAX_TIMEOUT_MILLISECS); // seconds
+																					// timeout;
+																					// if
+																					// no
+																					// server
+																					// reply,
+																					// the
+																					// request
+																					// expires
+		client.start();
 	}
-	
-	
-	public ReplicationResult forwardRequest(String slaveAdress, ReplicationRequest rr) throws BookStoreException{
-		ReplicationResult result = null;
+
+	public BookStoreResult forwardRequest(String slaveAdress,
+			ReplicationRequest rr) throws BookStoreException {
+		BookStoreResult result = null;
 		String listISBNsxmlString = BookStoreUtility
 				.serializeObjectToXMLString(rr);
 		Buffer requestContent = new ByteArrayBuffer(listISBNsxmlString);
-		String urlString = slaveAdress
-				+ BookStoreMessageTag.REPLICATIONREQUEST;
+		String urlString = slaveAdress + BookStoreMessageTag.REPLICATIONREQUEST;
 		ContentExchange exchange = new ContentExchange();
 
 		exchange.setMethod("POST");
 		exchange.setURL(urlString);
 		exchange.setRequestContent(requestContent);
-		result = BookStoreUtility.SendAndRecv2(this.client, exchange);
+		result = BookStoreUtility.SendAndRecv(this.client, exchange);
 		return result;
 	}
 }
